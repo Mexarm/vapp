@@ -8,8 +8,14 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'HelloWorld',
+      name: 'Home',
       component: HelloWorld
+    },
+    {
+      path: '/a',
+      name: 'SignIn',
+      componente: HelloWorld
     }
-  ]
+  ],
+  mode: 'history'
 })

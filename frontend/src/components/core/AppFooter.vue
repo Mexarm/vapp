@@ -1,5 +1,5 @@
 <template>
-  <v-footer>
+  <v-footer app>
     <v-container
       fluid
       fill-height
@@ -7,7 +7,7 @@
     >
       <v-layout align-center justify-end>
         <v-flex shrink>
-          &copy; {{ (new Date()).getFullYear() }} — Vuetify, LLC
+          &copy; {{ (new Date()).getFullYear() }} — vapp
         </v-flex>
       </v-layout>
     </v-container>
