@@ -7,8 +7,10 @@ import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
 
 import { store } from './store/store'
+import VueResource from 'vue-resource'
 
 Vue.use(Vuetify)
+Vue.use(VueResource)
 
 Vue.config.productionTip = false
 

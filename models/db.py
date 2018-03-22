@@ -5,7 +5,7 @@
 # Auth is for authenticaiton and access control
 # -------------------------------------------------------------------------
 from gluon.contrib.appconfig import AppConfig
-from gluon.tools import Auth
+from gluon.tools import Auth, AuthJWT
 
 # -------------------------------------------------------------------------
 # This scaffolding model makes your app work on Google App Engine too
@@ -94,6 +94,20 @@ auth = Auth(db, host_names=configuration.get('host.names'))
 auth.settings.extra_fields['auth_user'] = []
 auth.define_tables(username=False, signature=False)
 
+# -------------------------------------------------------------------------
+# JWT
+# ————————————————————————————————————
+
+def secure_payload(payload):
+    keys = ['registration_id', 'reset_password_key', 'registration_key']
+    for key in keys:
+        if key in payload['user']:
+            del payload['user'][key] #remove keys from payload
+    return payload
+
+authJWT = AuthJWT(auth, 
+                  secret_key=configuration.get('jwt.secret_key'),
+                  additional_payload=secure_payload)
 # -------------------------------------------------------------------------
 # configure email
 # -------------------------------------------------------------------------
