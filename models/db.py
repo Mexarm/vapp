@@ -91,8 +91,12 @@ auth = Auth(db, host_names=configuration.get('host.names'))
 # -------------------------------------------------------------------------
 # create all tables needed by auth, maybe add a list of extra fields
 # -------------------------------------------------------------------------
-auth.settings.extra_fields['auth_user'] = []
-auth.define_tables(username=False, signature=False)
+auth.settings.extra_fields['auth_user']= [
+  Field('account_expires_on', 'datetime'),
+  Field('password_created_on', 'datetime'),
+  Field('password_expires_on', 'datetime'),
+  Field('change_password_required', 'boolean')]
+auth.define_tables(username=False, signature=True)
 
 # -------------------------------------------------------------------------
 # JWT

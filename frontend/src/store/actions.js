@@ -1,29 +1,18 @@
 import authService from '../services/auth'
-
-function parseJwt(token) {
-  var base64Url = token.split('.')[1]
-  var base64 = base64Url.replace('-', '+').replace('_', '/')
-  return JSON.parse(window.atob(base64))
-};
+import { getUser } from './utils/utils'
 
 export default {
   updateSideNav({ commit }, payload) {
     commit('setSideNav', payload)
   },
   signInUser({ commit }, payload) {
+    commit('setError', null)
     commit('setLoading', true)
     authService.authenticate(payload)
       .then((resp) => {
         commit('setLoading', false)
-        let parsedToken = parseJwt(resp.token)
-        const user = {
-          first_name: parsedToken.user.first_name,
-          last_name: parsedToken.user.last_name,
-          email: parsedToken.user.email,
-          id: parsedToken.user.id
-          // groups: parsedToken.user_groups
-        }
-        commit('setUser', user)
+        localStorage.setItem('token', resp.token)
+        commit('setUser', getUser(resp.token))
       }
       )
       .catch((err) => {
@@ -32,8 +21,29 @@ export default {
         if (err.status === 401) {
           message = 'No Autorizado verifique credenciales'
         }
-        commit('setError', message)
+        if (err.status === 0) {
+          message = 'Error de conexion'
+        }
+        commit('setError', { message })
       }
       )
+  },
+
+  signOutUser({ commit }) {
+    localStorage.removeItem('token')
+    commit('setUser', null)
+  },
+
+  checkAuth({ commit }) {
+    var jwt = localStorage.getItem('token')
+    if (jwt) {
+      commit('setUser', getUser(jwt))
+    } else {
+      commit('setUser', null)
+    }
+  },
+
+  clearError({ commit }) {
+    commit('setError', null)
   }
 }

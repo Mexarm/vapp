@@ -9,10 +9,21 @@ import 'vuetify/dist/vuetify.min.css'
 import { store } from './store/store'
 import VueResource from 'vue-resource'
 
+import AppAlert from './components/core/AppAlert'
+
 Vue.use(Vuetify)
 Vue.use(VueResource)
 
+Vue.component('app-alert', AppAlert)
+
 Vue.config.productionTip = false
+
+Vue.http.interceptors.push(function (request) {
+  // modify headers
+  if (store.getters.userIsAuthenticated) {
+    request.headers.set('Authorization', 'Bearer ' + this.$store.getters.getAuthHeader)
+  }
+})
 
 /* eslint-disable no-new */
 new Vue({
@@ -20,5 +31,8 @@ new Vue({
   router,
   components: { App },
   template: '<App/>',
-  store
+  store,
+  created() {
+    this.$store.dispatch('checkAuth')
+  }
 })

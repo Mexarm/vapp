@@ -4,6 +4,9 @@
 # this file is released under public domain and you can use without limitations
 # -------------------------------------------------------------------------
 
+from utils import __cors
+cors = lambda r : __cors(r,configuration)
+
 # ---- example index page ----
 def index():
     response.flash = T("Hello World")
@@ -12,6 +15,8 @@ def index():
 # ---- API (example) -----
 @auth.requires_login()
 def api_get_user_email():
+    cors(response)
+    if request.env.request_method == 'OPTIONS': return response.json({})
     if not request.env.request_method == 'GET': raise HTTP(403)
     return response.json({'status':'success', 'email':auth.user.email})
 
@@ -46,6 +51,13 @@ def user():
     to decorate functions that need access control
     also notice there is http://..../[app]/appadmin/manage/auth to allow administrator to manage users
     """
+    return dict(form=auth())
+
+# ---- Action for login/register/etc (required for auth) -----
+def user_form():
+    print request.vars
+    cors(response)
+    if request.env.request_method == 'OPTIONS': return response.json({})
     return dict(form=auth())
 
 # ---- action to server uploaded static content (required) ---

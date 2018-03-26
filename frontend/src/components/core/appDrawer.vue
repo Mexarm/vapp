@@ -39,6 +39,11 @@ export default {
     userIsAuthenticated() {
       return this.$store.getters.userIsAuthenticated
     }
+  },
+  methods: {
+    onLogout() {
+      this.$store.dispatch('signOutUser')
+    }
   }
 }
 </script>

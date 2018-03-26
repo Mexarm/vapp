@@ -1,10 +1,12 @@
+import { expiredJwt } from './utils/utils'
+
 export default {
-  menuItems(state) {
+  menuItems(state, getters) {
     let menuItems = [
       { icon: 'face', title: 'Sign up', link: '/signup' },
       { icon: 'lock_open', title: 'Sign in', link: {name: 'SignIn'} }
     ]
-    if (state.userIsAuthenticated) {
+    if (getters.userIsAuthenticated) {
       menuItems = [
         { icon: 'supervisor_account', title: 'View Meetups', link: '/meetups' },
         { icon: 'room', title: 'Organize Meetup', link: '/meetup/new' },
@@ -12,6 +14,9 @@ export default {
       ]
     }
     return menuItems
+  },
+  user (state) {
+    return state.user
   },
   userIsAuthenticated(state) {
     return state.user !== null && state.user !== undefined
@@ -24,5 +29,16 @@ export default {
   },
   error(state) {
     return state.error
+  },
+
+  getAuthHeader() {
+    return {
+      'Authorization': 'Bearer ' + localStorage.getItem('token')
+    }
+  },
+
+  tokenIsExpired() {
+    var jwt = localStorage.getItem('token')
+    return expiredJwt(jwt)
   }
 }
