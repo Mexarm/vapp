@@ -11,6 +11,22 @@ import VueResource from 'vue-resource'
 
 import AppAlert from './components/core/AppAlert'
 
+import axios from 'axios'
+
+// axios.defaults.baseURL = 'http://'
+// axios.defaults.headers.common['something'] = 'xxxxxx'
+// axios.defaults.headers.get['something'] = 'xxxxxxx'
+
+axios.interceptors.request.use(config => {
+  console.log('request interceptor:', config)
+  return config
+})
+
+axios.interceptors.response.use(res => {
+  console.log('response interceptors:', res)
+  return res
+})
+
 Vue.use(Vuetify)
 Vue.use(VueResource)
 
