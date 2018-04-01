@@ -9,6 +9,8 @@
             <small>
               <em>&mdash;John Johnson</em>
             </small>
+            <v-btn @click="getFecha">obtener fecha de API</v-btn>
+            {{ fecha }}
           </footer>
         </blockquote>
       </v-layout>
@@ -17,18 +19,36 @@
 </template>
 
 <script>
-  export default {
-    computed: {
-      sideNav () {
-        return this.$store.getters.sideNav
-      }
+import axios from 'axios'
+export default {
+  data() {
+    return {
+      fecha: null
+    }
+  },
+  computed: {
+    sideNav() {
+      return this.$store.getters.sideNav
+    }
+  },
+  methods: {
+    getFecha() {
+      axios.get('http://localhost:8000/vapp/api/fecha')
+      .then(res => {
+        this.fecha = res.data.fecha
+        console.log(res)
+      }, err => {
+        console.log(err)
+      })
     }
   }
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h1, h2 {
+h1,
+h2 {
   font-weight: normal;
 }
 ul {

@@ -7,11 +7,12 @@ import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
 
 import { store } from './store/store'
-import VueResource from 'vue-resource'
+// import VueResource from 'vue-resource'
 
 import AppAlert from './components/core/AppAlert'
 
 import axios from 'axios'
+import Vuelidate from 'vuelidate'
 
 // axios.defaults.baseURL = 'http://'
 // axios.defaults.headers.common['something'] = 'xxxxxx'
@@ -19,27 +20,54 @@ import axios from 'axios'
 
 axios.interceptors.request.use(config => {
   console.log('request interceptor:', config)
+  const token = localStorage.getItem('token')
+  if (token !== null) {
+    config.headers.Authorization = 'Bearer ' + token
+  }
   return config
 })
 
-axios.interceptors.response.use(res => {
-  console.log('response interceptors:', res)
-  return res
+axios.interceptors.response.use(undefined, err => {
+  console.log(err.response)
+  return Promise.reject(err)
 })
 
+/*
+axios.interceptors.response.use(undefined, err => {
+  let res = err.response;
+  if (res.status === 401 && res.config && !res.config.__isRetryRequest) {
+    return new Promise((resolve, reject) => {
+      refreshLogin(getRefreshToken(),
+        success => {
+          setTokens(success.access_token, success.refresh_token)
+          err.config.__isRetryRequest = true
+          err.config.headers.Authorization = 'Bearer ' + getAccessToken()
+          resolve(axios(err.config))
+        },
+        error => {
+          console.log('Refresh login error: ', error)
+          reject(error)
+        }
+      )
+    });
+  }
+})
+
+ */
 Vue.use(Vuetify)
-Vue.use(VueResource)
+// Vue.use(VueResource)
+Vue.use(Vuelidate)
 
 Vue.component('app-alert', AppAlert)
 
 Vue.config.productionTip = false
 
-Vue.http.interceptors.push(function (request) {
+/* Vue.http.interceptors.push(function (request) {
   // modify headers
   if (store.getters.userIsAuthenticated) {
     request.headers.set('Authorization', 'Bearer ' + this.$store.getters.getAuthHeader)
   }
-})
+}) */
 
 /* eslint-disable no-new */
 new Vue({

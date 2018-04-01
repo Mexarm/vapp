@@ -3,7 +3,7 @@ import { expiredJwt } from './utils/utils'
 export default {
   menuItems(state, getters) {
     let menuItems = [
-      { icon: 'face', title: 'Sign up', link: '/signup' },
+      { icon: 'face', title: 'Sign up', link: {name: 'SignUp'} },
       { icon: 'lock_open', title: 'Sign in', link: {name: 'SignIn'} }
     ]
     if (getters.userIsAuthenticated) {

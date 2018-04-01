@@ -16,8 +16,11 @@ export default {
       }
       )
       .catch((err) => {
+        err = err.response
+        console.log(err)
         commit('setLoading', false)
-        let message = err.bodyText
+        console.log('error:', err)
+        let message = err.statusText
         if (err.status === 401) {
           message = 'No Autorizado verifique credenciales'
         }
