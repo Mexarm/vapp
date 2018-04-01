@@ -27,11 +27,10 @@
                   @change="$v.organization.$touch()" 
                   @blur="$v.organization.$touch()" 
                   required></v-select>
-                  {{ labels }}
               <v-checkbox :label="labels['Do you agree?']" v-model="checkbox" :error-messages="checkboxErrors" @change="$v.checkbox.$touch()" @blur="$v.checkbox.$touch()" required></v-checkbox>
 
-              <v-btn @click="submit">submit</v-btn>
-              <v-btn @click="clear">clear</v-btn>
+              <v-btn @click="submit">{{ labels['Submit'] }}</v-btn>
+              <v-btn @click="clear">{{ labels['Clear']}}</v-btn>
             </form>
           </v-flex>
         </v-card>
@@ -55,7 +54,9 @@ export default {
         'Name': 'Name',
         'e-mail': 'e-mail',
         'Organization': 'Organization',
-        'Do you agree?': 'Do you agree?'
+        'Do you agree?': 'Do you agree?',
+        'Submit': 'Submit',
+        'Clear': 'Clear'
       }
 
     }
