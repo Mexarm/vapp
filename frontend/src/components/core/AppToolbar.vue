@@ -5,7 +5,7 @@
       <img src="@/assets/logo.png" height="38px" width="38px" alt="vapp">
     </router-link>
     <v-fade-transition mode="out-in">
-      <v-toolbar-title class="pb-1 hidden-xs-only">web2py vue-app {{ sideNav }}</v-toolbar-title>
+      <v-toolbar-title class="pb-1 hidden-xs-only">web2py vue-app</v-toolbar-title>
     </v-fade-transition>
     <v-spacer></v-spacer>
     <v-toolbar-items class="hidden-xs-only">

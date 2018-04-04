@@ -13,6 +13,8 @@ import AppAlert from './components/core/AppAlert'
 
 import axios from 'axios'
 import Vuelidate from 'vuelidate'
+import VueI18n from 'vue-i18n'
+import { messages } from './i18n-messages'
 
 // axios.defaults.baseURL = 'http://'
 // axios.defaults.headers.common['something'] = 'xxxxxx'
@@ -28,7 +30,7 @@ axios.interceptors.request.use(config => {
 })
 
 axios.interceptors.response.use(undefined, err => {
-  console.log(err.response)
+  console.log('response error:', err.response)
   return Promise.reject(err)
 })
 
@@ -55,19 +57,19 @@ axios.interceptors.response.use(undefined, err => {
 
  */
 Vue.use(Vuetify)
-// Vue.use(VueResource)
 Vue.use(Vuelidate)
+Vue.use(VueI18n)
+/* {{ $t("message.greeting") }} */
 
 Vue.component('app-alert', AppAlert)
 
 Vue.config.productionTip = false
 
-/* Vue.http.interceptors.push(function (request) {
-  // modify headers
-  if (store.getters.userIsAuthenticated) {
-    request.headers.set('Authorization', 'Bearer ' + this.$store.getters.getAuthHeader)
-  }
-}) */
+export const i18n = new VueI18n({
+  locale: 'es', // set locale
+  fallbackLocale: 'es',
+  messages // set locale messages
+})
 
 /* eslint-disable no-new */
 new Vue({
@@ -76,6 +78,7 @@ new Vue({
   components: { App },
   template: '<App/>',
   store,
+  i18n,
   created() {
     this.$store.dispatch('checkAuth')
   }

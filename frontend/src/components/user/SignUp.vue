@@ -7,7 +7,7 @@
             <v-toolbar flat dark color="primary">
               <v-toolbar-title class="mx-auto">
                 <v-icon left dark class="mr-3">face
-                </v-icon>Sign Up
+                </v-icon>{{ $t("title.signup") }}
               </v-toolbar-title>
             </v-toolbar>
 
@@ -15,22 +15,62 @@
           <v-flex xs12 class="mx-4">
 
             <form>
-              <v-text-field :label="labels['Name']" v-model="name" :error-messages="nameErrors" :counter="10" @input="$v.name.$touch()" @blur="$v.name.$touch()" required></v-text-field>
-              <v-text-field :label="labels['e-mail']" v-model="email" :error-messages="emailErrors" @input="$v.email.$touch()" @blur="$v.email.$touch()" required></v-text-field>
+              <v-text-field :label="$t('user.name')" 
+                  v-model="user.name" 
+                  :error-messages="nameErrors" 
+                  @input="$v.user.name.$touch()" 
+                  @blur="$v.user.name.$touch()" 
+                  required></v-text-field>
+              <v-text-field 
+                  :label="$t('user.lastname')" 
+                  v-model="user.lastname" 
+                  :error-messages="lastnameErrors" 
+                  @input="$v.user.lastname.$touch()" 
+                  @blur="$v.user.lastname.$touch()" 
+                  required></v-text-field>
+              <v-text-field 
+                  :label="$t('user.email')" 
+                  v-model="user.email" 
+                  :error-messages="emailErrors" 
+                  @input="$v.user.email.$touch()" 
+                  @blur="$v.user.email.$touch()" 
+                  required></v-text-field>
+              <v-text-field 
+                  :label="$t('user.password')" 
+                  v-model="user.password" 
+                  :error-messages="passwordErrors" 
+                  @input="$v.user.password.$touch()" 
+                  @blur="$v.user.email.$touch()" 
+                  type="password" 
+                  required></v-text-field>
+              <v-text-field 
+                  :label="$t('user.confirmPassword')" 
+                  v-model="confirmPassword" 
+                  :error-messages="confirmPasswordErrors" 
+                  @input="$v.confirmPassword.$touch()" 
+                  @blur="$v.confirmPassword.$touch()" 
+                  type="password" 
+                  required></v-text-field>
               <v-select 
-                  :label="labels['Organization']" 
-                  v-model="organization" 
-                  :items="organizations"
-                  item-text="name"
-                  item-value="id"
-                  :error-messages="selectErrors" 
-                  @change="$v.organization.$touch()" 
-                  @blur="$v.organization.$touch()" 
+                  :label="$t('user.organization')" 
+                  v-model="user.organization" 
+                  :items="organizations" 
+                  item-text="name" 
+                  item-value="id" 
+                  :error-messages="organizationErrors" 
+                  @change="$v.user.organization.$touch()" 
+                  @blur="$v.user.organization.$touch()" 
                   required></v-select>
-              <v-checkbox :label="labels['Do you agree?']" v-model="checkbox" :error-messages="checkboxErrors" @change="$v.checkbox.$touch()" @blur="$v.checkbox.$touch()" required></v-checkbox>
-
-              <v-btn @click="submit">{{ labels['Submit'] }}</v-btn>
-              <v-btn @click="clear">{{ labels['Clear']}}</v-btn>
+              <v-subheader>{{ $t('user.termsAndConditions') }}</v-subheader>
+              <v-checkbox :label="$t('user.iAgree')" 
+                  v-model="user.terms" 
+                  :error-messages="termsErrors" 
+                  @change="$v.user.terms.$touch()"
+                  @blur="$v.user.terms.$touch()"
+                  required></v-checkbox>
+<pre> {{ $v }} </pre>
+              <v-btn @click="submit">{{ $t('actions.ok') }}</v-btn>
+              <v-btn @click="clear">{{ $t('actions.clear') }}</v-btn>
             </form>
           </v-flex>
         </v-card>
@@ -41,44 +81,108 @@
 
 <script>
 import axios from 'axios'
+import { validationMixin } from 'vuelidate'
+import { required, minLength, maxLength, sameAs, email } from 'vuelidate/lib/validators'
 
 export default {
-  data () {
-    return {
-      name: '',
-      email: '',
-      organization: null,
-      organizations: [],
-      terms: false,
-      labels: {
-        'Name': 'Name',
-        'e-mail': 'e-mail',
-        'Organization': 'Organization',
-        'Do you agree?': 'Do you agree?',
-        'Submit': 'Submit',
-        'Clear': 'Clear'
+  mixins: [ validationMixin ],
+  validations: {
+    user: {
+      name: {
+        required,
+        maxLength: maxLength(50)
+      },
+      email: {
+        required,
+        email
+      },
+      password: {
+        required,
+        minLength
+      },
+      organization: {
+        required
+      },
+      terms: {
+        required
       }
+    },
+    confirmPassword: {
+      sameAsPassword: sameAs(vm => {
+        return vm.user.password
+      })
+    }
+  },
+  data() {
+    return {
+      user: {
+        name: '',
+        lastname: '',
+        email: '',
+        password: '',
+        organization: null,
+        terms: false
+      },
+      confirmPassword: '',
+      organizations: []
+    }
+  },
+  methods: {
+    submit() {
+      this.$v.touch()
+      console.log(this.user)
+    },
+    clear() {
+      this.$v.reset()
+      this.user.name = ''
+      this.user.lastname = ''
+      this.user.email = ''
+      this.user.lastname = ''
+      this.confirmPassword = ''
+      this.user.organization = null
+      this.user.terms = false
+    }
+  },
+  computed: {
+    nameErrors () {
+      const errors = []
+      if (!this.$v.user.name.$dirty) return errors
+      !this.$v.user.name.maxLength && errors.push(this.$t('errors.maxLength', [this.$t('user.name'), this.$v.user.name.$params.maxLength.max]))
+      !this.$v.user.name.required && errors.push(this.$t('errors.required', [this.$t('user.name')]))
+      return errors
+    },
+    lastnameErrors () {
+
+    },
+    emailErrors () {
+
+    },
+    passwordErrors () {
+
+    },
+    confirmPasswordErrors () {
+
+    },
+    organizationErrors () {
+
+    },
+    termsErrors () {
 
     }
   },
-  created () {
-    axios.get('http://localhost:8000/vapp/default/api/organization.json')
-    .then(resp => {
-      this.organizations = resp.data.content
-    }, err => {
-      console.log(err.response)
-    })
-    axios.post('http://localhost:8000/vapp/api/translate.json', this.labels)
-    .then(resp => {
-      this.labels = resp.data
-    }, err => {
-      console.log(err.response)
-    })
+  created() {
+    axios.get('http://localhost:8000/vapp/default/api/organization.json').then(
+      resp => {
+        this.organizations = resp.data.content
+      },
+      err => {
+        console.log(err.response)
+      }
+    )
   }
 }
 </script>
 
 
 <style>
-
 </style>
