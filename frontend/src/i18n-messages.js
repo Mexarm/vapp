@@ -21,8 +21,12 @@ export const messages = {
       signup: 'Registrarse'
     },
     errors: {
+      minLength: '{0} de ser de {1} caracteres como minimo',
       maxLength: '{0} debe ser máximo de {1} caracteres',
-      required: '{0} es requerido'
+      required: '{0} es requerido',
+      email: 'Por favor proporcione un email valido',
+      passwordsDoesNotMatch: 'Las contraseñas no coinciden',
+      acceptTermsRequired: 'Es necesario aceptar los Terminos y Condiciones'
     },
     title: {
       signup: 'Registro'

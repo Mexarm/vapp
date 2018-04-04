@@ -32,7 +32,6 @@
                   :label="$t('user.email')" 
                   v-model="user.email" 
                   :error-messages="emailErrors" 
-                  @input="$v.user.email.$touch()" 
                   @blur="$v.user.email.$touch()" 
                   required></v-text-field>
               <v-text-field 
@@ -92,13 +91,17 @@ export default {
         required,
         maxLength: maxLength(50)
       },
+      lastname: {
+        required,
+        maxLength: maxLength(50)
+      },
       email: {
         required,
         email
       },
       password: {
         required,
-        minLength
+        minLength: minLength(8)
       },
       organization: {
         required
@@ -152,22 +155,43 @@ export default {
       return errors
     },
     lastnameErrors () {
-
+      const errors = []
+      if (!this.$v.user.lastname.$dirty) return errors
+      !this.$v.user.lastname.maxLength && errors.push(this.$t('errors.maxLength', [this.$t('user.lastname'), this.$v.user.name.$params.maxLength.max]))
+      !this.$v.user.lastname.required && errors.push(this.$t('errors.required', [this.$t('user.lastname')]))
+      return errors
     },
     emailErrors () {
-
+      const errors = []
+      if (!this.$v.user.email.$dirty) return errors
+      !this.$v.user.email.email && errors.push(this.$t('errors.email'))
+      !this.$v.user.email.required && errors.push(this.$t('errors.required', [this.$t('user.email')]))
+      return errors
     },
     passwordErrors () {
-
+      const errors = []
+      if (!this.$v.user.password.$dirty) return errors
+      !this.$v.user.password.minLength && errors.push(this.$t('errors.minLength', [this.$t('user.password'), this.$v.user.password.$params.minLength.min]))
+      !this.$v.user.password.required && errors.push(this.$t('errors.required', [this.$t('user.password')]))
+      return errors
     },
     confirmPasswordErrors () {
-
+      const errors = []
+      if (!this.$v.confirmPassword.$dirty) return errors
+      !this.$v.confirmPassword.sameAsPassword && errors.push(this.$t('errors.passwordsDoesNotMatch'))
+      return errors
     },
     organizationErrors () {
-
+      const errors = []
+      if (!this.$v.user.organization.$dirty) return errors
+      !this.$v.user.organization.required && errors.push(this.$t('errors.required', [this.$t('user.organization')]))
+      return errors
     },
     termsErrors () {
-
+      const errors = []
+      if (!this.$v.user.terms.$dirty) return errors
+      !this.$v.user.terms.required && errors.push(this.$t('errors.acceptTermsRequired'))
+      return errors
     }
   },
   created() {
