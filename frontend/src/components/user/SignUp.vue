@@ -15,7 +15,9 @@
           <v-flex xs12 class="mx-4">
 
             <form>
-              <v-text-field :label="$t('user.name')" 
+              <v-text-field 
+                  prepend-icon="account_circle"
+                  :label="$t('user.name')" 
                   v-model="user.name" 
                   :error-messages="nameErrors" 
                   @input="$v.user.name.$touch()" 
@@ -205,6 +207,34 @@ export default {
     )
   }
 }
+
+/*
+function handleErrors(fieldName, vueObj) {
+  const errors = []
+  if (!vueObj.$v[fieldName].$dirty) return errors
+  if ('email' in vueObj.$v[fieldName]) {
+    !vueObj.$v[fieldName].email && errors.push('This email address is invalid')
+  }
+  if ('required' in vueObj.$v[fieldName]) {
+    !vueObj.$v[fieldName].required && errors.push('This field is required')
+  }
+  if (fieldName in vueObj.serverErrors) {
+    vueObj.serverErrors[fieldName].forEach(error => {
+      errors.push(error)
+    });
+  }
+  return errors
+}
+Then it can be used like this in your Vue object:
+
+...
+computed: {
+    emailErrors () {
+      return handleErrors('email', this)
+    },
+  },
+...
+*/
 </script>
 
 
